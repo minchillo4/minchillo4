@@ -1,7 +1,6 @@
 - 👋 Hi, I’m @minchillo4
 - 👀 I’m interested in learning Blockchain development
 - 🌱 I’m currently learning soldity development
-- 💞️ I’m looking to collaborate on DAOs
 - 📫 lucasmminchillo@gmail.com
 
 Hello, I am Lucas, a brazillian business manager, looking to learn development to collaborate on the creation of web3.
