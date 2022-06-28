@@ -1,0 +1,52 @@
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.8;
+// importing contract ABI
+import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+
+contract FundMe {
+
+    uint256 public minimumUsd = 50 * 1e18;
+    address[] public funders; 
+    mapping(address => uint256) public fundByAddress;
+
+    function fund() public payable {
+        // 1.Queremos inserir uma quantidade mínima em USD para financiar o contrato
+        //2. Utilizamos o produto "Chainlink Data Feeds" para retornar o preço atual do ETH e fazer a conversão
+        require( getConversionRate(msg.value)>= minimumUsd,"You don't have enough funds");
+        // 18 decimals
+        funders.push(msg.sender);
+        fundByAddress[msg.sender] = msg.value;
+    }
+
+    function getPrice() public view returns(uint256) {
+        // usaremos o chainlink data feed para pegar informações de preço
+        // leremos um contrato(agregador) com uma função "latestRoundData" que retorna alguns dados, inclusive o preço.
+        // O que precisaremos para chamar um contrato externo?
+        // contract ABI: list of functions and interactions you can have with the contract. Doesnt include logic.
+        //1.ABI:
+        //2.Contract Address: 0x8A753747A1Fa494EC906cE90E9f37563A8AF630e
+        // creating a aggregatorv3interface type variable called priceFeed. We're assuming our contract at this address has all the funtionality of the Aggregatorv3Interface
+
+        AggregatorV3Interface priceFeed = AggregatorV3Interface(0x8A753747A1Fa494EC906cE90E9f37563A8AF630e);
+        (,int256 price,,,)= priceFeed.latestRoundData();
+        // ETH in terms of USD
+        // 3000.00000000 8 decimals places. you can call the decimals function to check how many decimals places the functions returns
+        return uint256(price * 1e10); // = 10000000000 - 10 + 8 = 18, to get same number of decimals places
+    }
+
+    function getConversionRate(uint ethAmount) public view returns(uint256) {
+        uint256 ethPrice = getPrice();
+        uint256 ethAmountUsd = (ethPrice * ethAmount) / 1e18;
+        return ethAmountUsd;
+    }
+    function getVersion() public view returns(uint256) {
+    
+       
+    }
+
+
+
+
+
+}
